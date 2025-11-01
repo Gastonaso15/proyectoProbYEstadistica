@@ -1,12 +1,8 @@
 # Proyecto Final - Probabilidad y Estadística
 ## Simulación de Sistema Académico
 
-Este proyecto simula el paso de 100 estudiantes por un grupo de 6 asignaturas con prerrequisitos.
+Este proyecto simula el paso de estudiantes por un grupo de 6 asignaturas con prerrequisitos.
 
-## Requisitos
-
-- Java 11 o superior
-- Maven 3.6+
 
 ## Estructura del Proyecto
 
@@ -27,7 +23,7 @@ El proyecto contiene las siguientes clases principales:
 - Cada asignatura puede usar distribución Normal o Poisson para generar notas
 
 ### Reglas de Simulación
-- **100 estudiantes** (valor fijo)
+
 - **Nota mínima para aprobar**: 60 puntos (valor fijo)
 - **Máximo de intentos por asignatura**: 5 (después el estudiante abandona)
 - **Máximo de asignaturas por semestre**: 2
@@ -76,10 +72,9 @@ java -cp target/classes:target/dependency/* proyecto.Main
 ## Visualizaciones en Consola
 
 Después de ejecutar la simulación, se mostrarán en consola:
-- **Histograma**: Tiempo de finalización de las 6 asignaturas (visualización ASCII)
-- **Boxplot**: Tiempo de finalización con estadísticas descriptivas
+- **Histograma**: Tiempo de finalización de las 6 asignaturas.
 
-Todos los resultados se imprimen directamente en la consola, no se generan archivos.
+
 
 ## Valores Modificables
 
@@ -89,7 +84,7 @@ Todos los resultados se imprimen directamente en la consola, no se generan archi
 ## Valores Fijos
 
 - **Nota mínima para aprobar**: 60 puntos (NO modificar)
-- **Cantidad de estudiantes**: 100 (NO modificar)
+
 
 Estos valores están claramente marcados con comentarios `// VALOR FIJO` en el código.
 
