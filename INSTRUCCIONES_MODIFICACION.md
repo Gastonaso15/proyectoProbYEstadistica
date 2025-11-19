@@ -1,115 +1,196 @@
 # Instrucciones para Modificar Valores del Proyecto
 
-## Valores Modificables (Marcados en Azul)
+## ⚠️ Ubicación Principal: `SimulationConfig.java`
 
-### 📍 Ubicación Principal: `SimulationEngine.java`
+**TODOS los parámetros modificables están ahora centralizados en un solo archivo:**
+`src/main/java/proyecto/SimulationConfig.java`
 
-Los valores modificables se encuentran en dos lugares:
-1. **Cantidad de estudiantes**: Constante `MAX_STUDENTS` (línea ~30)
-2. **Parámetros de asignaturas**: Método `initializeCourses()` (líneas ~62-89)
+Esto facilita la modificación de todos los valores sin tener que buscar en múltiples archivos.
 
-### 1. Modificar Cantidad de Estudiantes
+---
 
-**Ubicación:** `SimulationEngine.java`, línea ~30
+## Parámetros Modificables
 
-```java
-// MODIFICABLE - Cambiar este valor según se necesite
-private static final int MAX_STUDENTS = 100; // MODIFICABLE - Cantidad de estudiantes
-```
+### 1. Parámetros de Distribuciones de Asignaturas (Punto 1)
 
-**Ejemplo:** Para simular 200 estudiantes:
-```java
-private static final int MAX_STUDENTS = 200; // MODIFICABLE - Cantidad de estudiantes
-```
+**Ubicación:** `SimulationConfig.java` - Líneas 35-94
 
-**Nota:** Este valor se mostrará automáticamente en el Main al ejecutar la simulación.
-
-### 2. Modificar Parámetros de Asignaturas
-
-**Pasos para Modificar:**
-
-1. **Abrir el archivo:** `src/main/java/proyecto/SimulationEngine.java`**
-
-2. **Localizar el método `initializeCourses()`** (líneas 62-89 aproximadamente)
-
-3. **Modificar los parámetros según necesite:**
+Estos parámetros controlan cómo se generan las notas de cada asignatura:
 
 #### Para Asignaturas con Distribución NORMAL (A, B, D, E):
+
 ```java
-// Ejemplo: Asignatura A
-Course A = new Course("A", null, Course.DistributionType.NORMAL, 
-                      70.0,  // ← MODIFICAR: Media de la distribución
-                      15.0,  // ← MODIFICAR: Varianza de la distribución
-                      0);    // ← Dejar en 0 para distribuciones Normal
+// Asignatura A
+public static final double COURSE_A_MEAN = 70.0;      // ← MODIFICAR: Media
+public static final double COURSE_A_VARIANCE = 15.0;  // ← MODIFICAR: Varianza
+public static final double COURSE_A_LAMBDA = 0.0;     // ← Dejar en 0 para Normal
 ```
 
 #### Para Asignaturas con Distribución POISSON (C, F):
+
 ```java
-// Ejemplo: Asignatura C
-Course C = new Course("C", B, Course.DistributionType.POISSON, 
-                      0,     // ← Dejar en 0 para distribuciones Poisson
-                      0,     // ← Dejar en 0 para distribuciones Poisson
-                      60.0); // ← MODIFICAR: Lambda (parámetro de Poisson)
+// Asignatura C
+public static final double COURSE_C_MEAN = 0.0;       // ← Dejar en 0 para Poisson
+public static final double COURSE_C_VARIANCE = 0.0;   // ← Dejar en 0 para Poisson
+public static final double COURSE_C_LAMBDA = 60.0;    // ← MODIFICAR: Lambda (parámetro de Poisson)
 ```
 
-### Ejemplo de Modificación:
+**Ejemplo:** Cambiar la asignatura A para que tenga media 75 y varianza 20:
 
-Si desea cambiar la asignatura A para que tenga media 75 y varianza 20:
-
-**ANTES:**
 ```java
-Course A = new Course("A", null, Course.DistributionType.NORMAL, 70.0, 15.0, 0);
+// ANTES
+public static final double COURSE_A_MEAN = 70.0;
+public static final double COURSE_A_VARIANCE = 15.0;
+
+// DESPUÉS
+public static final double COURSE_A_MEAN = 75.0;
+public static final double COURSE_A_VARIANCE = 20.0;
 ```
 
-**DESPUÉS:**
+---
+
+### 2. Puntaje Mínimo para Aprobar (Punto 2)
+
+**Ubicación:** `SimulationConfig.java` - Línea 19
+
 ```java
-Course A = new Course("A", null, Course.DistributionType.NORMAL, 75.0, 20.0, 0);
+public static final double PASSING_SCORE = 60.0;  // ← MODIFICAR: Umbral de aprobación
 ```
 
-### Cambiar Tipo de Distribución:
+**Ejemplo:** Cambiar el umbral de aprobación a 70 puntos:
 
-Si desea cambiar una asignatura de Normal a Poisson (o viceversa):
-
-1. Cambiar `DistributionType.NORMAL` a `DistributionType.POISSON` (o viceversa)
-2. Para Poisson: poner mean=0, variance=0, y establecer lambda
-3. Para Normal: establecer mean y variance, y poner lambda=0
-
-**Ejemplo - Cambiar A de Normal a Poisson:**
 ```java
-// ANTES (Normal)
-Course A = new Course("A", null, Course.DistributionType.NORMAL, 70.0, 15.0, 0);
-
-// DESPUÉS (Poisson con lambda=65)
-Course A = new Course("A", null, Course.DistributionType.POISSON, 0, 0, 65.0);
+public static final double PASSING_SCORE = 70.0;
 ```
 
-## Valores FIJOS (NO Modificar)
+**Regla:** Un alumno solo puede tener dos estados:
+- Aprobar la asignatura al obtener `PASSING_SCORE` puntos o más
+- Recursar en caso contrario
 
-Los siguientes valores están marcados como FIJOS en el documento y NO deben modificarse:
+---
 
-1. **PASSING_SCORE = 60** (línea ~23 en SimulationEngine.java)
-   - Puntaje mínimo requerido para aprobar una asignatura
-   - Este valor está claramente marcado con comentario `// VALOR FIJO` en el código
+### 3. Rango de Semestres para Completar Todas las Asignaturas (Punto 3)
+
+**Ubicación:** `SimulationConfig.java` - Líneas 29-34
+
+```java
+public static final int MIN_SEMESTERS_COMPLETION = 3;   // ← MODIFICAR: Límite inferior
+public static final int MAX_SEMESTERS_COMPLETION = 15;  // ← MODIFICAR: Límite superior
+```
+
+**Ejemplo:** Cambiar el rango a entre 5 y 20 semestres:
+
+```java
+public static final int MIN_SEMESTERS_COMPLETION = 5;
+public static final int MAX_SEMESTERS_COMPLETION = 20;
+```
+
+**Uso:** Estos valores determinan el rango para contar estudiantes que superan todas las asignaturas.
+
+---
+
+### 4. Máximo de Intentos por Asignatura (Punto 5)
+
+**Ubicación:** `SimulationConfig.java` - Línea 25
+
+```java
+public static final int MAX_ATTEMPTS_PER_COURSE = 5;  // ← MODIFICAR: Máximo de inscripciones
+```
+
+**Ejemplo:** Permitir hasta 7 intentos:
+
+```java
+public static final int MAX_ATTEMPTS_PER_COURSE = 7;
+```
+
+**Regla:** Cada asignatura se puede inscribir un máximo de `MAX_ATTEMPTS_PER_COURSE` veces. Después de eso, el estudiante abandona.
+
+---
+
+### 5. Cantidad de Estudiantes
+
+**Ubicación:** `SimulationConfig.java` - Línea 36
+
+```java
+public static final int MAX_STUDENTS = 120;  // ← MODIFICAR: Cantidad de estudiantes
+```
+
+**Ejemplo:** Simular 200 estudiantes:
+
+```java
+public static final int MAX_STUDENTS = 200;
+```
+
+---
 
 ## Resumen de Parámetros por Asignatura
 
-| Asignatura | Tipo | Prerrequisito | Parámetros Modificables |
-|------------|------|--------------|------------------------|
-| A | Normal | Ninguno | Media, Varianza |
-| B | Normal | A | Media, Varianza |
-| C | Poisson | B | Lambda |
-| D | Normal | Ninguno | Media, Varianza |
-| E | Normal | D | Media, Varianza |
-| F | Poisson | E | Lambda |
+| Asignatura | Tipo Distribución | Prerrequisito | Parámetros Modificables en SimulationConfig |
+|------------|-------------------|--------------|---------------------------------------------|
+| A | Normal | Ninguno | `COURSE_A_MEAN`, `COURSE_A_VARIANCE` |
+| B | Normal | A | `COURSE_B_MEAN`, `COURSE_B_VARIANCE` |
+| C | Poisson | B | `COURSE_C_LAMBDA` |
+| D | Normal | Ninguno | `COURSE_D_MEAN`, `COURSE_D_VARIANCE` |
+| E | Normal | D | `COURSE_E_MEAN`, `COURSE_E_VARIANCE` |
+| F | Poisson | E | `COURSE_F_LAMBDA` |
+
+---
+
+## Cambiar Tipo de Distribución
+
+Si desea cambiar una asignatura de Normal a Poisson (o viceversa), debe modificar dos archivos:
+
+1. **`SimulationConfig.java`**: Actualizar los valores de MEAN, VARIANCE y LAMBDA
+2. **`SimulationEngine.java`**: Cambiar el `DistributionType` en el método `initializeCourses()`
+
+**Ejemplo - Cambiar A de Normal a Poisson:**
+
+**En SimulationConfig.java:**
+```java
+// ANTES
+public static final double COURSE_A_MEAN = 70.0;
+public static final double COURSE_A_VARIANCE = 15.0;
+public static final double COURSE_A_LAMBDA = 0.0;
+
+// DESPUÉS
+public static final double COURSE_A_MEAN = 0.0;
+public static final double COURSE_A_VARIANCE = 0.0;
+public static final double COURSE_A_LAMBDA = 65.0;
+```
+
+**En SimulationEngine.java (método initializeCourses()):**
+```java
+// ANTES
+Course A = new Course("A", null, Course.DistributionType.NORMAL, ...);
+
+// DESPUÉS
+Course A = new Course("A", null, Course.DistributionType.POISSON, ...);
+```
+
+---
 
 ## Notas Importantes
 
-- Después de modificar valores, debe **recompilar** el proyecto:
+- **Después de modificar valores, debe recompilar el proyecto:**
   ```bash
   mvn clean compile
   ```
 
-- Los cambios solo afectan la generación de notas, no alteran la lógica de la simulación.
+- Todos los parámetros modificables están claramente documentados en `SimulationConfig.java` con comentarios explicativos.
 
-- Todos los resultados se imprimen en consola (no se generan archivos PNG).
+- Los cambios afectan la simulación completa: generación de notas, criterios de aprobación, y estadísticas.
 
+- Los valores por defecto están configurados según las especificaciones originales del proyecto.
+
+---
+
+## Estructura de Archivos
+
+```
+src/main/java/proyecto/
+├── SimulationConfig.java    ← TODOS los parámetros modificables aquí
+├── SimulationEngine.java    ← Usa valores de SimulationConfig
+├── Student.java             ← Usa MAX_ATTEMPTS_PER_COURSE
+├── StatisticsGenerator.java ← Usa rango de semestres configurable
+└── ...
+```

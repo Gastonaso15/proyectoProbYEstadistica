@@ -10,24 +10,10 @@ import java.util.*;
 /**
  * Motor de simulación del sistema académico.
  * 
- * VALORES MODIFICABLES (marcados en azul en el documento):
- * - Parámetros de distribuciones de las asignaturas (media, varianza, lambda)
- *   Ver método initializeCourses()
- * - Cantidad de estudiantes
- *   Ver constante MAX_STUDENTS
- * 
- * VALORES FIJOS (marcados en rojo en el documento):
- * - PASSING_SCORE = 60 (puntaje mínimo para aprobar)
+ * VALORES MODIFICABLES: Ver clase SimulationConfig.java
+ * Todos los parámetros modificables están centralizados en SimulationConfig.
  */
 public class SimulationEngine {
-    private static final int PASSING_SCORE = 60; // VALOR FIJO - Puntaje mínimo para aprobar
-    
-    // ========================================
-    // ⚠️ VALOR MODIFICABLE ⚠️
-    // ========================================
-    // Cantidad de estudiantes a simular
-    // MODIFICABLE: Cambiar este valor según se necesite
-    private static final int MAX_STUDENTS = 120; // MODIFICABLE - Cantidad de estudiantes
     
     private RandomGenerator random;
     private List<Student> students;
@@ -47,53 +33,50 @@ public class SimulationEngine {
     /**
      * Inicializa las asignaturas con sus prerrequisitos.
      * 
-     * ========================================
-     * ⚠️ ZONA DE VALORES MODIFICABLES ⚠️
-     * ========================================
-     * 
-     * A continuación se definen los parámetros de cada asignatura.
-     * Estos valores están marcados como MODIFICABLES (en azul) en el documento.
-     * 
-     * Para asignaturas con distribución NORMAL:
-     *   - Parámetro 1: media (mean)
-     *   - Parámetro 2: varianza (variance)
-     *   - Parámetro 3: lambda (no usado para Normal, poner 0)
-     * 
-     * Para asignaturas con distribución POISSON:
-     *   - Parámetro 1: mean (no usado, poner 0)
-     *   - Parámetro 2: variance (no usado, poner 0)
-     *   - Parámetro 3: lambda (parámetro de Poisson)
-     * 
-     * Estructura: new Course(nombre, prerrequisito, tipo, mean, variance, lambda)
+     * PARÁMETROS MODIFICABLES: Ver SimulationConfig.java
+     * Los valores de media, varianza y lambda se obtienen de la clase SimulationConfig.
      */
     private void initializeCourses() {
         // ========== PRIMER BLOQUE: A -> B -> C ==========
+        // PARÁMETROS MODIFICABLES: Ver SimulationConfig.java
         
-        // Asignatura A (sin prerrequisito)
-        // MODIFICABLE: media=70.0, varianza=15.0
-        Course A = new Course("A", null, Course.DistributionType.NORMAL, 70.0, 15.0, 0);
+        // Asignatura A (sin prerrequisito) - Distribución Normal
+        Course A = new Course("A", null, Course.DistributionType.NORMAL, 
+                             SimulationConfig.COURSE_A_MEAN, 
+                             SimulationConfig.COURSE_A_VARIANCE, 
+                             SimulationConfig.COURSE_A_LAMBDA);
         
-        // Asignatura B (requiere A aprobada)
-        // MODIFICABLE: media=65.0, varianza=18.0
-        Course B = new Course("B", A, Course.DistributionType.NORMAL, 65.0, 18.0, 0);
+        // Asignatura B (requiere A aprobada) - Distribución Normal
+        Course B = new Course("B", A, Course.DistributionType.NORMAL, 
+                             SimulationConfig.COURSE_B_MEAN, 
+                             SimulationConfig.COURSE_B_VARIANCE, 
+                             SimulationConfig.COURSE_B_LAMBDA);
         
-        // Asignatura C (requiere B aprobada)
-        // MODIFICABLE: lambda=60.0
-        Course C = new Course("C", B, Course.DistributionType.POISSON, 0, 0, 60.0);
+        // Asignatura C (requiere B aprobada) - Distribución Poisson
+        Course C = new Course("C", B, Course.DistributionType.POISSON, 
+                             SimulationConfig.COURSE_C_MEAN, 
+                             SimulationConfig.COURSE_C_VARIANCE, 
+                             SimulationConfig.COURSE_C_LAMBDA);
         
         // ========== SEGUNDO BLOQUE: D -> E -> F ==========
         
-        // Asignatura D (sin prerrequisito)
-        // MODIFICABLE: media=72.0, varianza=14.0
-        Course D = new Course("D", null, Course.DistributionType.NORMAL, 72.0, 14.0, 0);
+        // Asignatura D (sin prerrequisito) - Distribución Normal
+        Course D = new Course("D", null, Course.DistributionType.NORMAL, 
+                             SimulationConfig.COURSE_D_MEAN, 
+                             SimulationConfig.COURSE_D_VARIANCE, 
+                             SimulationConfig.COURSE_D_LAMBDA);
         
-        // Asignatura E (requiere D aprobada)
-        // MODIFICABLE: media=68.0, varianza=16.0
-        Course E = new Course("E", D, Course.DistributionType.NORMAL, 68.0, 16.0, 0);
+        // Asignatura E (requiere D aprobada) - Distribución Normal
+        Course E = new Course("E", D, Course.DistributionType.NORMAL, 
+                             SimulationConfig.COURSE_E_MEAN, 
+                             SimulationConfig.COURSE_E_VARIANCE, 
+                             SimulationConfig.COURSE_E_LAMBDA);
         
-        // Asignatura F (requiere E aprobada)
-        // MODIFICABLE: lambda=58.0
-        Course F = new Course("F", E, Course.DistributionType.POISSON, 0, 0, 58.0);
+        // Asignatura F (requiere E aprobada) - Distribución Poisson
+        Course F = new Course("F", E, Course.DistributionType.POISSON, 
+                             SimulationConfig.COURSE_F_MEAN, 
+                             SimulationConfig.COURSE_F_VARIANCE, 
+                             SimulationConfig.COURSE_F_LAMBDA);
         
         courses.put("A", A);
         courses.put("B", B);
@@ -109,7 +92,7 @@ public class SimulationEngine {
     }
     
     private void initializeStudents() {
-        for (int i = 1; i <= MAX_STUDENTS; i++) {
+        for (int i = 1; i <= SimulationConfig.MAX_STUDENTS; i++) {
             students.add(new Student(i));
         }
     }
@@ -193,7 +176,7 @@ public class SimulationEngine {
         double score = generateScore(course);
         
         // Verificar si aprueba
-        if (score >= PASSING_SCORE) {
+        if (score >= SimulationConfig.PASSING_SCORE) {
             student.passCourse(courseName);
             // Calcular tiempo de aprobación (semestres desde primera inscripción)
             int firstSemester = student.getFirstEnrollmentSemester(courseName);
@@ -201,7 +184,7 @@ public class SimulationEngine {
             course.addPassingTime(passingTime);
         } else {
             // Si no aprueba y alcanzó el máximo de intentos, abandona
-            if (student.getAttempts(courseName) >= 5) {
+            if (student.getAttempts(courseName) >= SimulationConfig.MAX_ATTEMPTS_PER_COURSE) {
                 student.abandon(courseName);
                 course.incrementAbandonments();
             }
@@ -240,19 +223,8 @@ public class SimulationEngine {
      * @return cantidad de estudiantes
      */
     public static int getMaxStudents() {
-        return MAX_STUDENTS;
+        return SimulationConfig.MAX_STUDENTS;
     }
     
-    /**
-     * Permite modificar los parámetros de una asignatura.
-     */
-    public void setCourseParameters(String courseName, Course.DistributionType type, 
-                                   double mean, double variance, double lambda) {
-        Course course = courses.get(courseName);
-        if (course != null) {
-            // Nota: esto requeriría modificar la clase Course para permitir cambios
-            // Por ahora, asumimos que los parámetros se establecen en initializeCourses
-        }
-    }
 }
 

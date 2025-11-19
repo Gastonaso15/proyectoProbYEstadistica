@@ -61,7 +61,7 @@ public class Student {
             return false; // Ya aprobada
         }
         
-        if (getAttempts(courseName) >= 5) {
+        if (getAttempts(courseName) >= SimulationConfig.MAX_ATTEMPTS_PER_COURSE) {
             abandon(courseName);
             return false; // Máximo de intentos alcanzado
         }
@@ -90,9 +90,9 @@ public class Student {
     
     public String getAbandonmentCourse() {
         // Retorna el nombre de la asignatura que causó el abandono
-        // (la que tiene 5 intentos sin aprobar)
+        // (la que tiene el máximo de intentos sin aprobar)
         for (Map.Entry<String, Integer> entry : attempts.entrySet()) {
-            if (entry.getValue() >= 5 && !hasPassed(entry.getKey())) {
+            if (entry.getValue() >= SimulationConfig.MAX_ATTEMPTS_PER_COURSE && !hasPassed(entry.getKey())) {
                 return entry.getKey();
             }
         }

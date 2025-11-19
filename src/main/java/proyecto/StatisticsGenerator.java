@@ -47,7 +47,7 @@ public class StatisticsGenerator {
     }
     
     /**
-     * 3. Total de alumnos que superan todas las asignaturas entre 3 y 15 semestres.
+     * 3. Total de alumnos que superan todas las asignaturas entre el rango configurado de semestres.
      */
     public int getStudentsCompletedBetween3And15Semesters() {
         int count = 0;
@@ -55,7 +55,8 @@ public class StatisticsGenerator {
         for (Student student : engine.getStudents()) {
             if (student.hasCompletedAllCourses()) {
                 int semesters = student.getSemesterCompleted();
-                if (semesters >= 3 && semesters <= 15) {
+                if (semesters >= SimulationConfig.MIN_SEMESTERS_COMPLETION && 
+                    semesters <= SimulationConfig.MAX_SEMESTERS_COMPLETION) {
                     count++;
                 }
             }
@@ -154,9 +155,11 @@ public class StatisticsGenerator {
             System.out.printf("   %s: %.2f semestres\n", entry.getKey(), entry.getValue());
         }
         
-        // 3. Estudiantes que completan entre 3 y 15 semestres
+        // 3. Estudiantes que completan en el rango configurado de semestres
         int completed = getStudentsCompletedBetween3And15Semesters();
-        System.out.println("\n3. ESTUDIANTES QUE COMPLETAN TODAS LAS ASIGNATURAS (3-15 semestres):");
+        System.out.printf("\n3. ESTUDIANTES QUE COMPLETAN TODAS LAS ASIGNATURAS (%d-%d semestres):\n", 
+                         SimulationConfig.MIN_SEMESTERS_COMPLETION, 
+                         SimulationConfig.MAX_SEMESTERS_COMPLETION);
         System.out.printf("   Total: %d estudiantes\n", completed);
         
         // 4. Clasificación por dificultad
